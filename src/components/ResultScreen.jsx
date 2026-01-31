@@ -492,6 +492,13 @@ function ResultScreen({ calibrationData, measurementData, faceCombatData, jujuts
             </p>
           </div>
 
+          {/* 技術詳細リンク */}
+          <div className="details-link-section">
+            <a href="./details.html" target="_blank" rel="noopener noreferrer">
+              評価の詳細・技術解説
+            </a>
+          </div>
+
           {/* リトライボタン */}
           <button
             className="scouter-button retry-button"

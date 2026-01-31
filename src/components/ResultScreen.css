@@ -402,9 +402,25 @@
   margin: 0;
 }
 
+/* 技術詳細リンク */
+.details-link-section {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.details-link-section a {
+  color: var(--scouter-green);
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+.details-link-section a:hover {
+  text-shadow: 0 0 8px var(--scouter-green-glow);
+}
+
 /* リトライボタン */
 .retry-button {
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 /* ========== レスポンシブ：小さいスマホ ========== */
