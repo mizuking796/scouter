@@ -10,9 +10,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: 100svh; /* スマホで正確にビューポート高さに */
+  min-height: 100dvh; /* フォールバック */
   padding: 16px 16px 20px;
-  gap: 12px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  gap: 10px;
+  box-sizing: border-box;
 }
 
 .result-title {
@@ -28,7 +34,7 @@
 }
 
 .combat-power-value {
-  font-size: 36px;
+  font-size: clamp(32px, 8vw, 36px);
   font-weight: bold;
   letter-spacing: 1px;
   animation: powerGlow 2s infinite;
@@ -60,8 +66,8 @@
 
 .polygon-wrapper {
   flex-shrink: 0;
-  width: 160px;
-  height: 160px;
+  width: clamp(130px, 35vw, 160px);
+  height: clamp(130px, 35vw, 160px);
 }
 
 .polygon-wrapper canvas {
@@ -82,7 +88,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border: 1px solid var(--scouter-green-dim);
   background: rgba(0, 255, 65, 0.05);
 }
@@ -104,13 +110,13 @@
 
 /* ひとこと評価 */
 .one-line-comment {
-  padding: 8px 16px;
+  padding: 6px 12px;
   text-align: center;
   animation: fadeIn 0.5s ease-out;
 }
 
 .one-line-comment p {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--scouter-green);
   margin: 0;
 }
@@ -401,9 +407,64 @@
   margin-top: 8px;
 }
 
+/* ========== レスポンシブ：小さいスマホ ========== */
+@media (max-height: 700px) {
+  .first-view {
+    gap: 6px;
+    padding: 10px 12px 16px;
+  }
+
+  .result-title {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .combat-power-value {
+    font-size: 28px;
+  }
+
+  .main-content-row {
+    gap: 8px;
+  }
+
+  .polygon-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .main-scores-card {
+    gap: 2px;
+  }
+
+  .main-score-item {
+    padding: 4px 6px;
+  }
+
+  .main-score-label {
+    font-size: 9px;
+  }
+
+  .main-score-value {
+    font-size: 12px;
+  }
+
+  .one-line-comment {
+    padding: 4px 10px;
+  }
+
+  .one-line-comment p {
+    font-size: 11px;
+  }
+
+  .first-view-disclaimer {
+    font-size: 8px;
+  }
+}
+
 /* ========== レスポンシブ：タブレット・PC ========== */
 @media (min-width: 600px) {
   .first-view {
+    min-height: 100vh;
     padding: 32px 24px 40px;
     gap: 20px;
   }

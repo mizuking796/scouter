@@ -2,11 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
-  padding: 20px;
-  gap: 20px;
+  padding: 8px;
+  gap: 8px;
+  overflow: hidden;
 }
 
 .camera-container {
@@ -18,6 +19,7 @@
   border: 2px solid var(--scouter-green);
   box-shadow: 0 0 10px var(--scouter-green-glow);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .camera-video {
@@ -61,8 +63,6 @@
   opacity: 0.6;
 }
 
-/* 肩シルエット削除 */
-
 /* 中央線 */
 .center-line {
   position: absolute;
@@ -102,23 +102,24 @@
 
 /* 指示パネル */
 .instruction-panel {
-  padding: 20px 30px;
+  padding: 12px 16px;
   text-align: center;
   max-width: 500px;
+  flex-shrink: 0;
 }
 
 .main-message {
-  font-size: 20px;
-  margin-bottom: 8px;
+  font-size: 16px;
+  margin-bottom: 4px;
 }
 
 .sub-message {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--scouter-green-dim);
 }
 
 .loading {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--scouter-green-dim);
 }
 
@@ -170,22 +171,35 @@
   white-space: nowrap;
 }
 
-/* モバイル対応 */
-@media (max-width: 600px) {
+/* ========== モバイル（縦向き）========== */
+@media (max-width: 600px) and (orientation: portrait) {
+  .calibration-screen {
+    padding: 4px;
+    gap: 4px;
+    justify-content: flex-start;
+  }
+
   .camera-container {
-    max-width: 100%;
+    /* 画面幅いっぱいに、高さは利用可能な空間を最大限使う */
+    width: calc(100vw - 8px);
+    max-width: none;
+    /* 高さベースで計算（画面高さ - 指示パネル分） */
+    height: calc(100vh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    max-height: calc((100vw - 8px) * 0.75); /* 4:3比率の上限 */
+    aspect-ratio: auto;
   }
 
   .instruction-panel {
-    padding: 16px 20px;
+    padding: 8px 12px;
   }
 
   .main-message {
-    font-size: 16px;
+    font-size: 15px;
+    margin-bottom: 2px;
   }
 
   .sub-message {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .eye-calibration-marker {
@@ -197,5 +211,72 @@
   .eye-label {
     font-size: 12px;
     bottom: 50px;
+  }
+}
+
+/* ========== モバイル（横向き）========== */
+@media (max-width: 900px) and (orientation: landscape) {
+  .calibration-screen {
+    flex-direction: row;
+    padding: 8px;
+    gap: 12px;
+  }
+
+  .camera-container {
+    height: calc(100vh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    width: auto;
+    max-width: none;
+    aspect-ratio: 4/3;
+  }
+
+  .instruction-panel {
+    padding: 12px;
+    max-width: 200px;
+  }
+
+  .main-message {
+    font-size: 14px;
+  }
+
+  .sub-message {
+    font-size: 12px;
+  }
+}
+
+/* ========== タブレット・PC ========== */
+@media (min-width: 601px) and (orientation: portrait) {
+  .calibration-screen {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .camera-container {
+    max-width: 90vw;
+    max-height: calc(100vh - 200px);
+  }
+}
+
+@media (min-width: 901px) {
+  .calibration-screen {
+    padding: 20px;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .camera-container {
+    max-width: 640px;
+  }
+
+  .instruction-panel {
+    padding: 20px 30px;
+  }
+
+  .main-message {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .sub-message {
+    font-size: 16px;
   }
 }
