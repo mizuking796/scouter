@@ -168,7 +168,7 @@
         <li><a href="#neck-index">4. ネック指数</a></li>
         <li><a href="#trapezius">5. 首肩ボリューム特徴</a></li>
         <li><a href="#face-combat">6. 闘争的フェイス特徴</a></li>
-        <li><a href="#jujutsu">7. 柔術フェイス特徴（耳解析）</a></li>
+        <li><a href="#jujutsu">7. 耳解析（内部特徴量）</a></li>
         <li><a href="#hexagon">8. 6競技適性（ファジィ推論）</a></li>
         <li><a href="#combat-power">9. 戦闘力計算</a></li>
         <li><a href="#gamma">10. ガンマ補正</a></li>
@@ -359,31 +359,31 @@
     </div>
 
     <!-- ============================================== -->
-    <h2 id="jujutsu">7. 柔術フェイス特徴（耳解析）</h2>
+    <h2 id="jujutsu">7. 耳解析（内部特徴量）</h2>
     <!-- ============================================== -->
 
     <h3>7.1 概要</h3>
-    <p>耳まわりの形状から組み技系格闘技の雰囲気を可視化します。4つの指標で評価。</p>
+    <p>耳まわりの形状から特徴量を抽出し、6競技適性の計算に使用します。</p>
+    <div class="warning">
+      この特徴量は内部計算用であり、UIには表示されません。
+      6競技適性（セクション8）の入力特徴量 EJ_raw, FA_crop として使用されます。
+    </div>
 
-    <h3>7.2 耳輪郭の不規則さ（Ear Contour）</h3>
-    <p>耳の輪郭線の凹凸を検出。不規則なほど高スコア。</p>
+    <h3>7.2 計算される指標</h3>
+    <ul>
+      <li><strong>耳輪郭の不規則さ:</strong> 輪郭線の角度変化の標準偏差</li>
+      <li><strong>左右非対称:</strong> 左右の耳の形状差</li>
+      <li><strong>局所的膨らみ:</strong> 耳の特定部位の膨らみ</li>
+      <li><strong>輪郭連続性:</strong> 輪郭線の不連続点</li>
+    </ul>
 
-    <h3>7.3 左右非対称（Ear Asymmetry）</h3>
-    <p>左右の耳の形状差を評価。非対称なほど高スコア。</p>
-
-    <h3>7.4 局所的膨らみ（Ear Thickness Proxy）</h3>
-    <p>耳の特定部位の膨らみを検出。</p>
-
-    <h3>7.5 輪郭連続性の破れ（Ear Continuity）</h3>
-    <p>輪郭線の不連続点を検出。</p>
-
-    <h3>7.6 総合スコアと戦闘力への影響</h3>
+    <h3>7.3 6競技適性への寄与</h3>
     <div class="formula">
       jujutsuScore = (contour + asymmetry + thickness + continuity) / 4<br>
       <br>
-      // 条件付きボーナス（柔術スコア70以上 かつ 首指標平均60以上）<br>
-      bonusRate = 0.02 + (jujutsuScore - 70) / 30 × 0.01<br>
-      bonus = min(bonusRate, 0.03)  // 最大3%
+      // 6競技適性で使用される変数<br>
+      EJ_raw = jujutsuScore / 100  // 柔術・レスリング・MMAで使用<br>
+      FA_crop = asymmetry.score / 100  // ボクシング・MMA・キックで使用
     </div>
 
     <!-- ============================================== -->
