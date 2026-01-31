@@ -48,10 +48,19 @@ function extractFeatures(params) {
   // 首顎角度（calibrationデータから推定）
   let NJ_crop = 0
   if (calibrationData?.baseFaceData) {
-    const { jawWidth, faceWidth, faceHeight } = calibrationData.baseFaceData
-    // 顎の角度を顎幅/顔高さ比から推定
-    if (faceHeight > 0) {
-      NJ_crop = Math.min(1, (jawWidth / faceHeight) * 1.5)
+    // 正規化された値を優先使用（デバイス間で一貫した結果）
+    const normalizedJawWidth = calibrationData.baseFaceData.normalizedJawWidth
+    const normalizedFaceHeight = calibrationData.baseFaceData.normalizedFaceHeight
+
+    if (normalizedJawWidth && normalizedFaceHeight && normalizedFaceHeight > 0) {
+      // 正規化された値を使用
+      NJ_crop = Math.min(1, (normalizedJawWidth / normalizedFaceHeight) * 1.5)
+    } else {
+      // フォールバック: 従来のピクセル値を使用
+      const { jawWidth, faceHeight } = calibrationData.baseFaceData
+      if (faceHeight > 0) {
+        NJ_crop = Math.min(1, (jawWidth / faceHeight) * 1.5)
+      }
     }
   }
 

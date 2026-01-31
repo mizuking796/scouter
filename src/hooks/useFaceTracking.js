@@ -202,14 +202,19 @@ function extractFaceData(landmarks, canvasWidth, canvasHeight) {
   const leftEye = landmarks[LANDMARKS.LEFT_EYE_OUTER]
   const rightEye = landmarks[LANDMARKS.RIGHT_EYE_OUTER]
 
-  // 顔幅（頬の幅）
+  // 顔幅（頬の幅）- ピクセル値
   const faceWidth = Math.abs(rightCheek.x - leftCheek.x) * canvasWidth
 
-  // 顔の高さ
+  // 顔の高さ - ピクセル値
   const faceHeight = Math.abs(chin.y - forehead.y) * canvasHeight
 
-  // 顎幅（首幅の推定に使用）
+  // 顎幅（首幅の推定に使用）- ピクセル値
   const jawWidth = Math.abs(jawRight.x - jawLeft.x) * canvasWidth
+
+  // 正規化された値（0-1範囲、デバイス間で一貫）
+  const normalizedFaceWidth = Math.abs(rightCheek.x - leftCheek.x)
+  const normalizedFaceHeight = Math.abs(chin.y - forehead.y)
+  const normalizedJawWidth = Math.abs(jawRight.x - jawLeft.x)
 
   // 顔の中心位置
   const centerX = nose.x * canvasWidth
@@ -222,6 +227,10 @@ function extractFaceData(landmarks, canvasWidth, canvasHeight) {
     faceWidth,
     faceHeight,
     jawWidth,
+    // 正規化された値（デバイス非依存の計算用）
+    normalizedFaceWidth,
+    normalizedFaceHeight,
+    normalizedJawWidth,
     centerX,
     centerY,
     chinY,

@@ -494,7 +494,7 @@ function ResultScreen({ calibrationData, measurementData, faceCombatData, jujuts
 
           {/* 技術詳細リンク */}
           <div className="details-link-section">
-            <a href="./details.html" target="_blank" rel="noopener noreferrer">
+            <a href="./details.html">
               評価の詳細・技術解説
             </a>
           </div>
