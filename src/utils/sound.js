@@ -1,9 +1,10 @@
 // 音声管理（シングルトン）
 let audioContext = null
+let isWarmedUp = false
 
 // ユーザー操作後に呼び出す（ブラウザ制限対策）
 export async function initAudio() {
-  if (audioContext && audioContext.state === 'running') return
+  if (audioContext && audioContext.state === 'running' && isWarmedUp) return
 
   try {
     if (!audioContext) {
@@ -17,17 +18,50 @@ export async function initAudio() {
       console.log('AudioContext resumed to:', audioContext.state)
     }
 
-    // ダミー音を無音で再生して完全に初期化（遅延防止）
+    // より確実なウォームアップ: 複数のダミー音を再生
+    for (let i = 0; i < 3; i++) {
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      gainNode.gain.value = 0 // 無音
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      oscillator.start(audioContext.currentTime + i * 0.01)
+      oscillator.stop(audioContext.currentTime + i * 0.01 + 0.001)
+    }
+
+    isWarmedUp = true
+    console.log('Audio warmup complete')
+  } catch (e) {
+    console.error('Failed to init AudioContext:', e)
+  }
+}
+
+// 音声を事前にウォームアップ（キャリブレーション中などに呼ぶ）
+export async function warmupAudio() {
+  if (!audioContext) {
+    await initAudio()
+    return
+  }
+
+  if (audioContext.state === 'suspended') {
+    try {
+      await audioContext.resume()
+    } catch (e) {
+      console.error('Failed to resume AudioContext:', e)
+    }
+  }
+
+  // 無音のビープでウォームアップ
+  try {
     const oscillator = audioContext.createOscillator()
     const gainNode = audioContext.createGain()
-    gainNode.gain.value = 0 // 無音
+    gainNode.gain.value = 0
     oscillator.connect(gainNode)
     gainNode.connect(audioContext.destination)
     oscillator.start()
     oscillator.stop(audioContext.currentTime + 0.001)
-    console.log('Audio warmup complete')
   } catch (e) {
-    console.error('Failed to init AudioContext:', e)
+    console.error('Warmup failed:', e)
   }
 }
 

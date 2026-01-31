@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import { useFaceTracking } from '../hooks/useFaceTracking'
-import { playOkSound } from '../utils/sound'
+import { playOkSound, warmupAudio } from '../utils/sound'
 import { extractTrapeziusBaseData } from '../features/trapezius'
 import './CalibrationScreen.css'
 
@@ -100,6 +100,11 @@ function CalibrationScreen({ onComplete }) {
 
         // キャリブレーションデータを収集
         calibrationDataRef.current.push(results)
+
+        // カウントダウン中にオーディオをウォームアップ（1秒前）
+        if (elapsed >= STILL_DURATION - 1000 && elapsed < STILL_DURATION - 900) {
+          warmupAudio()
+        }
 
         if (elapsed >= STILL_DURATION) {
           // キャリブレーション完了

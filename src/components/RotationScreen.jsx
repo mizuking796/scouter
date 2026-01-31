@@ -371,7 +371,7 @@ function RotationScreen({ direction, calibrationData, onComplete }) {
 
     // 闘争的フェイス特徴を計算（有効な場合のみ）
     if (FACE_COMBAT_ENABLED && results.landmarks) {
-      const features = calculateAllFaceCombatFeatures(results.landmarks)
+      const features = calculateAllFaceCombatFeatures(results.landmarks, results.aspectRatio)
       // ランドマークデータも保存（結果画面での顔マッピング表示用）
       faceCombatRef.current = {
         ...features,

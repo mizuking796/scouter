@@ -16,18 +16,19 @@ export const FACE_COMBAT_ENABLED = true
 /**
  * 全ての闘争的フェイス特徴を計算
  * @param {Array} landmarks - 468個のランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（width/height）
  * @returns {Object} - 各特徴のスコアと総合スコア
  */
-export function calculateAllFaceCombatFeatures(landmarks) {
+export function calculateAllFaceCombatFeatures(landmarks, aspectRatio = 4/3) {
   if (!FACE_COMBAT_ENABLED) {
     return null
   }
 
   const expression = calculateExpressionSuppression(landmarks)
   const gaze = calculateGazeStability(landmarks)
-  const fwhr = calculateFWHR(landmarks)
-  const jaw = calculateJawLine(landmarks)
-  const cheekbone = calculateCheekbone(landmarks)
+  const fwhr = calculateFWHR(landmarks, aspectRatio)
+  const jaw = calculateJawLine(landmarks, aspectRatio)
+  const cheekbone = calculateCheekbone(landmarks, aspectRatio)
 
   // 総合スコア（5つの平均）
   const totalScore = Math.round(

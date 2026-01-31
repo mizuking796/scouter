@@ -68,6 +68,7 @@ export function useFaceTracking(videoRef, canvasRef, onResults) {
           landmarks,
           angles,
           faceData,
+          aspectRatio: width / height, // デバイス間の計算補正用
           timestamp: Date.now()
         })
       }

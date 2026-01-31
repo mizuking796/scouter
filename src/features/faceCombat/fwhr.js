@@ -11,15 +11,16 @@ let fwhrHistory = []
 /**
  * fWHRを計算
  * @param {Array} landmarks - 468個のランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（width/height）
  * @returns {Object} - { score, rank, details }
  */
-export function calculateFWHR(landmarks) {
+export function calculateFWHR(landmarks, aspectRatio = 4/3) {
   if (!landmarks || landmarks.length < 468) {
     return { score: 50, rank: 'B', details: {} }
   }
 
-  // fWHR値を計算
-  const fwhrValue = extractFWHR(landmarks)
+  // fWHR値を計算（アスペクト比補正付き）
+  const fwhrValue = extractFWHR(landmarks, aspectRatio)
 
   // 履歴に追加
   fwhrHistory.push(fwhrValue)
@@ -47,9 +48,11 @@ export function calculateFWHR(landmarks) {
 }
 
 /**
- * fWHR値を抽出
+ * fWHR値を抽出（アスペクト比補正付き）
+ * @param {Array} landmarks - ランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（width/height）
  */
-function extractFWHR(landmarks) {
+function extractFWHR(landmarks, aspectRatio) {
   // 頬骨幅（左右の頬骨間の距離）
   const leftCheek = landmarks[LANDMARKS.LEFT_CHEEKBONE]
   const rightCheek = landmarks[LANDMARKS.RIGHT_CHEEKBONE]
@@ -83,11 +86,13 @@ function extractFWHR(landmarks) {
     return 1.9
   }
 
-  const fwhr = cheekboneWidth / faceHeight
+  // アスペクト比補正: x座標はwidth基準、y座標はheight基準なので
+  // 実際の比率 = (x_norm * width) / (y_norm * height) = (x_norm / y_norm) * aspectRatio
+  const fwhr = (cheekboneWidth / faceHeight) * aspectRatio
 
   // デバッグ出力（初回のみ）
   if (fwhrHistory.length === 0) {
-    console.log('fWHR計算:', { cheekboneWidth, faceHeight, fwhr })
+    console.log('fWHR計算:', { cheekboneWidth, faceHeight, aspectRatio, fwhr })
   }
 
   return fwhr

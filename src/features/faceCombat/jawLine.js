@@ -11,15 +11,16 @@ let jawHistory = []
 /**
  * 顎ライン特徴を計算
  * @param {Array} landmarks - 468個のランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（width/height）
  * @returns {Object} - { score, rank, details }
  */
-export function calculateJawLine(landmarks) {
+export function calculateJawLine(landmarks, aspectRatio = 4/3) {
   if (!landmarks || landmarks.length < 468) {
     return { score: 50, rank: 'B', details: {} }
   }
 
-  // 顎ライン特徴を抽出
-  const jawFeatures = extractJawFeatures(landmarks)
+  // 顎ライン特徴を抽出（アスペクト比補正付き）
+  const jawFeatures = extractJawFeatures(landmarks, aspectRatio)
 
   // 履歴に追加
   jawHistory.push(jawFeatures)
@@ -53,17 +54,19 @@ export function calculateJawLine(landmarks) {
 }
 
 /**
- * 顎ライン特徴を抽出
+ * 顎ライン特徴を抽出（アスペクト比補正付き）
+ * @param {Array} landmarks - ランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（width/height）
  */
-function extractJawFeatures(landmarks) {
+function extractJawFeatures(landmarks, aspectRatio) {
   // 顎の角度を計算（左顎角 - 顎先 - 右顎角のなす角）
   const jawLeft = landmarks[LANDMARKS.JAW_ANGLE_LEFT]
   const jawRight = landmarks[LANDMARKS.JAW_ANGLE_RIGHT]
   const chin = landmarks[LANDMARKS.CHIN]
 
-  // ベクトル計算
-  const v1 = { x: jawLeft.x - chin.x, y: jawLeft.y - chin.y }
-  const v2 = { x: jawRight.x - chin.x, y: jawRight.y - chin.y }
+  // ベクトル計算（アスペクト比補正: xにaspectRatioを掛けて同一スケールに）
+  const v1 = { x: (jawLeft.x - chin.x) * aspectRatio, y: jawLeft.y - chin.y }
+  const v2 = { x: (jawRight.x - chin.x) * aspectRatio, y: jawRight.y - chin.y }
 
   // 内積と外積から角度を計算
   const dot = v1.x * v2.x + v1.y * v2.y
@@ -75,8 +78,8 @@ function extractJawFeatures(landmarks) {
   const jawLineLeft = landmarks[LANDMARKS.JAW_LEFT]
   const jawLineRight = landmarks[LANDMARKS.JAW_RIGHT]
 
-  // 顎のラインの幅と顎先の位置関係
-  const jawWidth = Math.abs(jawLineRight.x - jawLineLeft.x)
+  // 顎のラインの幅と顎先の位置関係（アスペクト比補正）
+  const jawWidth = Math.abs(jawLineRight.x - jawLineLeft.x) * aspectRatio
   const chinDrop = chin.y - Math.min(jawLineLeft.y, jawLineRight.y)
 
   // シャープネス = 幅に対する垂直距離の比率

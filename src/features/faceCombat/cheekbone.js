@@ -11,9 +11,10 @@ let cheekboneHistory = []
 /**
  * 頬骨特徴を計算
  * @param {Array} landmarks - 468個のランドマーク
+ * @param {number} aspectRatio - キャンバスのアスペクト比（未使用だが一貫性のため受け取る）
  * @returns {Object} - { score, rank, details }
  */
-export function calculateCheekbone(landmarks) {
+export function calculateCheekbone(landmarks, aspectRatio = 4/3) {
   if (!landmarks || landmarks.length < 468) {
     return { score: 50, rank: 'B', details: {} }
   }
