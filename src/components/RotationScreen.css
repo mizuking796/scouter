@@ -1,0 +1,565 @@
+.rotation-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  gap: 20px;
+  animation: fadeInScreen 0.3s ease-out;
+}
+
+@keyframes fadeInScreen {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.camera-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4/3;
+  background: #000;
+  border: 2px solid var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  overflow: hidden;
+}
+
+.camera-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 中央線 */
+.center-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: var(--scouter-green);
+  opacity: 0.4;
+}
+
+/* 方向矢印 */
+.direction-arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.direction-arrow svg {
+  filter: drop-shadow(0 0 20px var(--scouter-green))
+          drop-shadow(0 0 40px var(--scouter-green))
+          drop-shadow(0 0 60px var(--scouter-green));
+}
+
+.direction-arrow.right {
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: arrowFlashRight 0.6s ease-in-out infinite;
+}
+
+.direction-arrow.left {
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: arrowFlashLeft 0.6s ease-in-out infinite;
+}
+
+.direction-arrow.top {
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: arrowFlashTop 0.6s ease-in-out infinite;
+}
+
+@keyframes arrowFlashRight {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+@keyframes arrowFlashLeft {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+@keyframes arrowFlashTop {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+/* 静止進捗バー */
+.hold-progress-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--scouter-green-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hold-progress {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  transition: width 0.05s linear;
+}
+
+/* 指示オーバーレイ */
+.instruction-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10;
+  gap: 15px;
+  padding-bottom: 20px;
+}
+
+.big-direction {
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 15px var(--scouter-green-glow),
+    0 0 30px var(--scouter-green-glow);
+}
+
+.instruction-sub {
+  font-size: 18px;
+  color: var(--scouter-green-dim);
+}
+
+/* 正面に戻る指示オーバーレイ（下部に配置） */
+.return-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 5;
+  gap: 8px;
+  padding-bottom: 20px;
+}
+
+.return-message {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 15px var(--scouter-green-glow),
+    0 0 30px var(--scouter-green-glow);
+}
+
+.return-sub {
+  font-size: 18px;
+  color: var(--scouter-green-dim);
+}
+
+.countdown {
+  font-size: 72px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 20px var(--scouter-green-glow),
+    0 0 40px var(--scouter-green-glow);
+  animation: countdownPop 0.5s ease-out;
+}
+
+@keyframes countdownPop {
+  0% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 成功オーバーレイ */
+.success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.success-icon {
+  font-size: 120px;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 20px var(--scouter-green-glow),
+    0 0 40px var(--scouter-green-glow),
+    0 0 60px var(--scouter-green-glow);
+}
+
+/* 角度表示 */
+.angle-display {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+/* 指示パネル */
+.instruction-panel {
+  position: relative;
+  padding: 20px 30px;
+  text-align: center;
+  max-width: 500px;
+}
+
+.direction-label {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.main-message {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.sub-message {
+  font-size: 16px;
+  color: var(--scouter-green-dim);
+}
+
+.loading {
+  font-size: 16px;
+  color: var(--scouter-green-dim);
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 14px;
+}
+
+/* リセットボタン */
+.reset-tracking-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  border: 1px solid var(--scouter-green-dim);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--scouter-green-dim);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s;
+  z-index: 1000;
+}
+
+.reset-tracking-button:hover {
+  color: var(--scouter-green);
+  border-color: var(--scouter-green);
+}
+
+/* READYオーバーレイ（目の位置合わせ） */
+.ready-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 5;
+  gap: 8px;
+  padding-bottom: 20px;
+}
+
+.ready-arrow {
+  animation: arrowPulse 1s ease-in-out infinite;
+}
+
+.ready-arrow svg {
+  filter: drop-shadow(0 0 20px var(--scouter-green-glow))
+          drop-shadow(0 0 40px var(--scouter-green-glow));
+}
+
+.ready-sub {
+  font-size: 18px;
+  color: var(--scouter-green-dim);
+  margin-top: -10px;
+}
+
+@keyframes arrowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.ready-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 10px var(--scouter-green-glow),
+    0 0 20px var(--scouter-green-glow);
+}
+
+.ready-progress-container {
+  width: 50%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--scouter-green-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ready-progress {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  transition: width 0.05s linear;
+}
+
+/* リカバリーオーバーレイ */
+.recovery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 5;
+  gap: 8px;
+  padding-bottom: 20px;
+}
+
+.recovery-message {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow:
+    0 0 15px var(--scouter-green-glow),
+    0 0 30px var(--scouter-green-glow);
+  animation: recoveryPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes recoveryPulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.recovery-progress-container {
+  width: 50%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--scouter-green-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.recovery-progress {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  transition: width 0.05s linear;
+}
+
+/* 目の位置ガイド */
+.eye-guide-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100; /* オーバーレイより前面に表示 */
+}
+
+/* ターゲット（キャリブレーション時の目の位置） */
+.eye-target {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--scouter-green);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--scouter-green-glow);
+  animation: targetPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes targetPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* 現在の目の位置 */
+.eye-current {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  background: var(--scouter-green);
+  border-radius: 50%;
+  box-shadow:
+    0 0 10px var(--scouter-green-glow),
+    0 0 20px var(--scouter-green-glow),
+    0 0 30px var(--scouter-green-glow);
+  z-index: 101;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .camera-container {
+    max-width: 100%;
+  }
+
+  .angle-display {
+    font-size: 24px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .success-icon {
+    font-size: 80px;
+  }
+
+  .instruction-panel {
+    padding: 16px 20px;
+  }
+
+  .direction-label {
+    font-size: 20px;
+  }
+
+  .main-message {
+    font-size: 16px;
+  }
+
+  .sub-message {
+    font-size: 14px;
+  }
+
+  .eye-target {
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+  }
+
+  .eye-current {
+    width: 16px;
+    height: 16px;
+  }
+
+  .direction-arrow svg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .direction-arrow.right {
+    right: 10px;
+  }
+
+  .direction-arrow.left {
+    left: 10px;
+  }
+
+  .direction-arrow.top {
+    top: 10px;
+  }
+
+  .ready-arrow svg {
+    width: 70px;
+    height: 70px;
+  }
+
+  .ready-message {
+    font-size: 20px;
+  }
+
+  .ready-sub {
+    font-size: 14px;
+  }
+}

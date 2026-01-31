@@ -1,0 +1,201 @@
+.calibration-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  gap: 20px;
+}
+
+.camera-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 4/3;
+  background: #000;
+  border: 2px solid var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  overflow: hidden;
+}
+
+.camera-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* 鏡像表示 */
+}
+
+.overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 顔ガイド */
+.face-guide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.face-oval {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 50%;
+  border: 2px dashed var(--scouter-green-dim);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* 肩シルエット削除 */
+
+/* 中央線 */
+.center-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--scouter-green) 0%,
+    var(--scouter-green) 45%,
+    transparent 45%,
+    transparent 55%,
+    var(--scouter-green) 55%,
+    var(--scouter-green) 100%
+  );
+  opacity: 0.8;
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+}
+
+/* 進捗バー */
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  transition: width 0.1s linear;
+}
+
+/* 指示パネル */
+.instruction-panel {
+  padding: 20px 30px;
+  text-align: center;
+  max-width: 500px;
+}
+
+.main-message {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.sub-message {
+  font-size: 16px;
+  color: var(--scouter-green-dim);
+}
+
+.loading {
+  font-size: 16px;
+  color: var(--scouter-green-dim);
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 14px;
+}
+
+/* 目の位置ガイド（キャリブレーション中） */
+.eye-guide-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.eye-calibration-marker {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--scouter-green);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--scouter-green-glow);
+  animation: calibrationPulse 1s ease-in-out infinite;
+}
+
+@keyframes calibrationPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.eye-label {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: var(--scouter-green);
+  text-shadow: 0 0 10px var(--scouter-green-glow);
+  white-space: nowrap;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .camera-container {
+    max-width: 100%;
+  }
+
+  .instruction-panel {
+    padding: 16px 20px;
+  }
+
+  .main-message {
+    font-size: 16px;
+  }
+
+  .sub-message {
+    font-size: 14px;
+  }
+
+  .eye-calibration-marker {
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+  }
+
+  .eye-label {
+    font-size: 12px;
+    bottom: 50px;
+  }
+}

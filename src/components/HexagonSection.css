@@ -1,0 +1,132 @@
+.hexagon-section {
+  width: 100%;
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  border-radius: 8px;
+}
+
+.hexagon-title {
+  color: rgba(255, 165, 0, 0.9) !important;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.hexagon-note {
+  color: rgba(255, 165, 0, 0.6);
+  text-align: center;
+  font-size: 0.75rem;
+  margin-bottom: 15px;
+}
+
+.hexagon-chart-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hexagon-scores {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 15px 0;
+  padding: 0 10px;
+}
+
+.hexagon-score-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 165, 0, 0.1);
+  border-radius: 4px;
+}
+
+.hexagon-sport-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hexagon-sport-name {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+}
+
+.hexagon-sport-score {
+  color: rgba(255, 165, 0, 0.9);
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.hexagon-top-sport {
+  text-align: center;
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(255, 165, 0, 0.15);
+  border-radius: 6px;
+}
+
+.hexagon-top-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  margin-right: 8px;
+}
+
+.hexagon-top-value {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.hexagon-comment {
+  text-align: center;
+  padding: 12px;
+  margin: 10px 0;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  border-left: 3px solid rgba(255, 165, 0, 0.6);
+}
+
+.hexagon-comment p {
+  color: rgba(255, 165, 0, 0.85);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.hexagon-disclaimer {
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  font-size: 0.65rem;
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 480px) {
+  .hexagon-scores {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .hexagon-score-item {
+    padding: 4px 6px;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .hexagon-sport-name {
+    font-size: 0.7rem;
+    text-align: center;
+  }
+}

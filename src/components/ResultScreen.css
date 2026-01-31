@@ -1,0 +1,524 @@
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ========== ファーストビュー（スマホ最優先） ========== */
+.first-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 16px 16px 20px;
+  gap: 12px;
+}
+
+.result-title {
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* 戦闘力 */
+.combat-power-hero {
+  text-align: center;
+}
+
+.combat-power-value {
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  animation: powerGlow 2s infinite;
+}
+
+@keyframes powerGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 8px var(--scouter-green-glow),
+      0 0 16px var(--scouter-green-glow);
+  }
+  50% {
+    text-shadow:
+      0 0 16px var(--scouter-green-glow),
+      0 0 32px var(--scouter-green-glow);
+  }
+}
+
+/* メイン多角形 + スコアカード */
+.main-content-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.polygon-wrapper {
+  flex-shrink: 0;
+  width: 140px;
+  height: 140px;
+}
+
+.polygon-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 4項目スコアカード */
+.main-scores-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.main-score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid var(--scouter-green-dim);
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.main-score-label {
+  font-size: 10px;
+  color: var(--scouter-green-dim);
+  white-space: nowrap;
+}
+
+.main-score-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  font-family: 'Courier New', monospace;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ひとこと評価 */
+.one-line-comment {
+  padding: 8px 16px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.one-line-comment p {
+  font-size: 13px;
+  color: var(--scouter-green);
+  margin: 0;
+}
+
+/* 注意書き */
+.first-view-disclaimer {
+  font-size: 9px;
+  color: var(--scouter-green-dim);
+  text-align: center;
+  opacity: 0.6;
+  margin: 0;
+}
+
+/* ========== セカンドビュー ========== */
+.second-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 32px 16px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* ========== サードビュー ========== */
+.third-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 32px 16px 60px;
+  gap: 32px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 詳細セクション */
+.detail-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-chart-container {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1;
+}
+
+/* セクションタイトル */
+.section-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* 軌跡表示 */
+.trajectory-section {
+  width: 100%;
+  text-align: center;
+}
+
+.trajectory-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.trajectory-canvas {
+  width: 220px;
+  height: 220px;
+  border: 2px solid var(--scouter-green);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+  border-radius: 8px;
+}
+
+/* スコア一覧 */
+.scores-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.score-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border: 1px solid var(--scouter-green-dim);
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.score-label {
+  flex: 1;
+  font-size: 11px;
+  color: var(--scouter-green-dim);
+}
+
+.score-value {
+  width: 36px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  font-family: 'Courier New', monospace;
+}
+
+.score-rank {
+  width: 32px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.rank-S {
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.rank-A {
+  color: #ff6b6b;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+}
+
+.rank-B {
+  color: var(--scouter-green);
+}
+
+.rank-C {
+  color: var(--scouter-green-dim);
+}
+
+.rank-D {
+  color: #666;
+}
+
+.balance-item {
+  margin-top: 4px;
+  border-color: var(--scouter-green);
+}
+
+/* 角度セクション */
+.angles-section {
+  width: 100%;
+  text-align: center;
+}
+
+/* 左右比較バー */
+.lr-comparison {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.lr-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lr-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  width: 18px;
+  text-align: center;
+}
+
+.lr-bars {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 16px;
+  position: relative;
+}
+
+.lr-bar-wrapper {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+.lr-bar-wrapper.left {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lr-bar-wrapper.right {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.lr-bar {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 8px var(--scouter-green-glow);
+  transition: width 0.5s ease-out;
+}
+
+.left-bar {
+  border-radius: 4px 0 0 4px;
+}
+
+.right-bar {
+  border-radius: 0 4px 4px 0;
+}
+
+.lr-center-line {
+  width: 2px;
+  height: 24px;
+  background: var(--scouter-green);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.lr-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding: 0 20px;
+}
+
+.lr-value {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  font-family: 'Courier New', monospace;
+}
+
+.lr-diff {
+  font-size: 10px;
+  color: var(--scouter-green-dim);
+}
+
+/* 上の角度 */
+.up-angle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid var(--scouter-green-dim);
+  background: rgba(0, 255, 65, 0.05);
+}
+
+.angle-direction {
+  font-size: 12px;
+  color: var(--scouter-green-dim);
+}
+
+.angle-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  font-family: 'Courier New', monospace;
+}
+
+/* 免責事項 */
+.final-disclaimer {
+  text-align: center;
+  padding: 12px;
+  border-top: 1px solid var(--scouter-green-dim);
+}
+
+.final-disclaimer p {
+  font-size: 10px;
+  color: var(--scouter-green-dim);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* リトライボタン */
+.retry-button {
+  margin-top: 8px;
+}
+
+/* ========== レスポンシブ：タブレット・PC ========== */
+@media (min-width: 600px) {
+  .first-view {
+    padding: 32px 24px 40px;
+    gap: 20px;
+  }
+
+  .result-title {
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+
+  .combat-power-value {
+    font-size: 56px;
+  }
+
+  .main-content-row {
+    gap: 24px;
+    max-width: 480px;
+  }
+
+  .polygon-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+
+  .main-scores-card {
+    gap: 6px;
+  }
+
+  .main-score-item {
+    padding: 8px 14px;
+  }
+
+  .main-score-label {
+    font-size: 12px;
+  }
+
+  .main-score-value {
+    font-size: 18px;
+  }
+
+  .one-line-comment {
+    padding: 12px 24px;
+  }
+
+  .one-line-comment p {
+    font-size: 16px;
+  }
+
+  .first-view-disclaimer {
+    font-size: 11px;
+  }
+
+  .second-view {
+    padding: 40px 24px;
+  }
+
+  .third-view {
+    padding: 40px 24px 80px;
+    gap: 40px;
+  }
+
+  .detail-chart-container {
+    max-width: 320px;
+  }
+
+  .trajectory-canvas {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+/* ========== レスポンシブ：PC ========== */
+@media (min-width: 1024px) {
+  .first-view {
+    padding: 48px 40px 56px;
+    gap: 28px;
+  }
+
+  .result-title {
+    font-size: 22px;
+  }
+
+  .combat-power-value {
+    font-size: 72px;
+  }
+
+  .main-content-row {
+    gap: 40px;
+    max-width: 600px;
+  }
+
+  .polygon-wrapper {
+    width: 260px;
+    height: 260px;
+  }
+
+  .main-score-item {
+    padding: 10px 16px;
+  }
+
+  .main-score-label {
+    font-size: 13px;
+  }
+
+  .main-score-value {
+    font-size: 20px;
+  }
+
+  .one-line-comment p {
+    font-size: 18px;
+  }
+
+  .second-view,
+  .third-view {
+    max-width: 800px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}

@@ -1,0 +1,204 @@
+/* 闘争的フェイス特徴セクション */
+.face-combat-section {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid var(--scouter-green-dim);
+  background: rgba(0, 255, 65, 0.03);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.face-combat-title {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.face-combat-disclaimer {
+  font-size: 11px;
+  color: var(--scouter-green-dim);
+  text-align: center;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+/* 横並びレイアウト */
+.face-combat-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* 左側：顔マッピング */
+.face-combat-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.face-landmark-canvas {
+  border: 1px solid var(--scouter-green-dim);
+  box-shadow: 0 0 10px var(--scouter-green-glow);
+}
+
+/* 総合スコア（インライン版） */
+.face-combat-total-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--scouter-green);
+  background: rgba(0, 255, 65, 0.08);
+  width: 100%;
+}
+
+.face-combat-total-label {
+  font-size: 12px;
+  color: var(--scouter-green-dim);
+}
+
+.face-combat-total-score {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-shadow: 0 0 10px var(--scouter-green-glow);
+}
+
+.face-combat-total-rank {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* 右側：スコア表 */
+.face-combat-right {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 各特徴 */
+.face-combat-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.face-combat-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.face-combat-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.face-combat-label {
+  font-size: 13px;
+  color: var(--scouter-green-dim);
+}
+
+.face-combat-rank {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.face-combat-bar-container {
+  grid-column: 1 / 2;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--scouter-green-dim);
+  overflow: hidden;
+}
+
+.face-combat-bar {
+  height: 100%;
+  background: var(--scouter-green);
+  box-shadow: 0 0 8px var(--scouter-green-glow);
+  transition: width 0.3s ease-out;
+}
+
+.face-combat-score-value {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--scouter-green);
+  text-align: right;
+  min-width: 32px;
+}
+
+/* ランク色 */
+.rank-S {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.rank-A {
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.rank-B {
+  color: var(--scouter-green);
+}
+
+.rank-C {
+  color: var(--scouter-green-dim);
+}
+
+.rank-D {
+  color: #666;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .face-combat-section {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .face-combat-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .face-combat-left {
+    width: 100%;
+  }
+
+  .face-landmark-canvas {
+    width: 160px !important;
+    height: 200px !important;
+  }
+
+  .face-combat-right {
+    width: 100%;
+  }
+
+  .face-combat-title {
+    font-size: 16px;
+  }
+
+  .face-combat-total-score {
+    font-size: 20px;
+  }
+
+  .face-combat-total-rank {
+    font-size: 18px;
+  }
+
+  .face-combat-label {
+    font-size: 12px;
+  }
+
+  .face-combat-score-value {
+    font-size: 16px;
+  }
+}
