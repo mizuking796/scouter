@@ -71,6 +71,7 @@ function RotationScreen({ direction, calibrationData, onComplete }) {
   const [message, setMessage] = useState('')
   const [subMessage, setSubMessage] = useState('')
   const [holdProgress, setHoldProgress] = useState(0)
+  const [debugInfo, setDebugInfo] = useState('')
   const [countdown, setCountdown] = useState(2) // 最初から表示
   const [currentEyePositions, setCurrentEyePositions] = useState(
     calibrationData?.baseEyePositions || null
@@ -360,6 +361,11 @@ function RotationScreen({ direction, calibrationData, onComplete }) {
 
     const angle = config.getAngle(results.angles, calData.baseAngles)
     const absAngle = Math.abs(angle)
+
+    // デバッグ表示
+    if (currentPhase === PHASE.ROTATING || currentPhase === PHASE.HOLDING) {
+      setDebugInfo(`yaw=${results.angles.yaw.toFixed(0)} base=${calibrationData.baseAngles.yaw.toFixed(0)} → ${absAngle.toFixed(0)}°`)
+    }
 
     // 履歴に追加（回旋中のみ、戻り時は不要）
     if (currentPhase === PHASE.ROTATING || currentPhase === PHASE.HOLDING) {
@@ -693,6 +699,10 @@ function RotationScreen({ direction, calibrationData, onComplete }) {
 
         {error && (
           <p className="error-message">{error}</p>
+        )}
+
+        {debugInfo && (
+          <p style={{ fontSize: '10px', color: '#888', marginTop: '8px', fontFamily: 'monospace' }}>{debugInfo}</p>
         )}
 
         {/* リセットボタン（目の点が消えた時用） */}

@@ -2,16 +2,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  height: 100dvh;
-  padding: 4px;
-  padding-top: max(4px, env(safe-area-inset-top));
-  padding-bottom: max(4px, env(safe-area-inset-bottom));
-  gap: 4px;
-  overflow: hidden;
-  box-sizing: border-box;
+  padding: 20px;
+  gap: 20px;
   animation: fadeInScreen 0.3s ease-out;
 }
 
@@ -28,8 +23,7 @@
   position: relative;
   width: 100%;
   max-width: 640px;
-  flex: 1;
-  min-height: 0;
+  aspect-ratio: 4/3;
   background: #000;
   border: 2px solid var(--scouter-green);
   box-shadow: 0 0 10px var(--scouter-green-glow);
@@ -496,20 +490,10 @@
   z-index: 101;
 }
 
-/* モバイル対応（縦向き） */
-@media (max-width: 600px) and (orientation: portrait) {
-  .rotation-screen {
-    padding: 2px;
-    padding-top: max(2px, env(safe-area-inset-top));
-    padding-bottom: max(2px, env(safe-area-inset-bottom));
-    gap: 2px;
-  }
-
+/* モバイル対応 */
+@media (max-width: 600px) {
   .camera-container {
-    width: calc(100vw - 4px);
-    max-width: none;
-    flex: 1;
-    min-height: 0;
+    max-width: 100%;
   }
 
   .angle-display {
@@ -523,22 +507,19 @@
   }
 
   .instruction-panel {
-    padding: 8px 12px;
-    flex-shrink: 0;
+    padding: 16px 20px;
   }
 
   .direction-label {
-    font-size: 18px;
-    margin-bottom: 4px;
+    font-size: 20px;
   }
 
   .main-message {
-    font-size: 15px;
-    margin-bottom: 4px;
+    font-size: 16px;
   }
 
   .sub-message {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .eye-target {
@@ -580,27 +561,5 @@
 
   .ready-sub {
     font-size: 14px;
-  }
-}
-
-/* モバイル対応（横向き） */
-@media (max-width: 900px) and (orientation: landscape) {
-  .rotation-screen {
-    flex-direction: row;
-    padding: 8px;
-    gap: 8px;
-  }
-
-  .camera-container {
-    height: calc(100vh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    width: auto;
-    max-width: none;
-    aspect-ratio: 4/3;
-    flex: none;
-  }
-
-  .instruction-panel {
-    padding: 12px;
-    max-width: 180px;
   }
 }
