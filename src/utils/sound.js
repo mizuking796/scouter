@@ -18,16 +18,23 @@ export async function initAudio() {
       console.log('AudioContext resumed to:', audioContext.state)
     }
 
-    // より確実なウォームアップ: 複数のダミー音を再生
-    for (let i = 0; i < 3; i++) {
+    // より確実なウォームアップ: 実際に聞こえるビープを複数回再生
+    // 最初の音声は遅延しやすいため、ここで消費する
+    for (let i = 0; i < 5; i++) {
       const oscillator = audioContext.createOscillator()
       const gainNode = audioContext.createGain()
-      gainNode.gain.value = 0 // 無音
+      // 非常に小さい音量で実際のビープ音を再生（オーディオパイプラインを確実にアクティブに）
+      gainNode.gain.value = 0.01
+      oscillator.frequency.value = 440
+      oscillator.type = 'square'
       oscillator.connect(gainNode)
       gainNode.connect(audioContext.destination)
-      oscillator.start(audioContext.currentTime + i * 0.01)
-      oscillator.stop(audioContext.currentTime + i * 0.01 + 0.001)
+      oscillator.start(audioContext.currentTime + i * 0.05)
+      oscillator.stop(audioContext.currentTime + i * 0.05 + 0.02)
     }
+
+    // 少し待ってからウォームアップ完了
+    await new Promise(resolve => setTimeout(resolve, 300))
 
     isWarmedUp = true
     console.log('Audio warmup complete')

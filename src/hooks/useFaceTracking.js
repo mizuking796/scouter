@@ -34,16 +34,18 @@ export function useFaceTracking(videoRef, canvasRef, onResults) {
 
   // 結果を処理する関数
   const processResults = useCallback((results) => {
-    if (!canvasRef.current || !videoRef.current) return
+    if (!canvasRef.current) return
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     const { width, height } = canvas
 
     // 実際のビデオフレームの解像度を取得（MediaPipeのランドマークはこの解像度基準）
-    const videoWidth = videoRef.current.videoWidth || width
-    const videoHeight = videoRef.current.videoHeight || height
-    const actualAspectRatio = videoWidth / videoHeight
+    // videoWidthが0や未定義の場合は4:3をデフォルトとする
+    let actualAspectRatio = 4 / 3
+    if (videoRef.current && videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) {
+      actualAspectRatio = videoRef.current.videoWidth / videoRef.current.videoHeight
+    }
 
     // キャンバスをクリア＆状態リセット
     ctx.clearRect(0, 0, width, height)

@@ -6,8 +6,8 @@ import './CalibrationScreen.css'
 
 const STILL_THRESHOLD = 5 // 角度変化の閾値（度）
 const STILL_DURATION = 2000 // 静止判定時間（ms）- 2秒
-const ANGLE_CENTER_THRESHOLD = 15 // 角度の中央判定の閾値（度）
-const POSITION_CENTER_THRESHOLD = 80 // 位置の中央判定の閾値（ピクセル）
+const ANGLE_CENTER_THRESHOLD = 25 // 角度の中央判定の閾値（度）- 緩め
+const POSITION_CENTER_THRESHOLD = 100 // 位置の中央判定の閾値（ピクセル）- 緩め
 const CANVAS_CENTER_X = 320 // キャンバス中央X
 const CANVAS_CENTER_Y = 240 // キャンバス中央Y
 const MAX_FACE_WIDTH = 200 // 顔幅の最大値（これを超えると「離れて」）
@@ -18,8 +18,8 @@ function CalibrationScreen({ onComplete }) {
   const canvasRef = useRef(null)
   const [faceData, setFaceData] = useState(null)
   const [stillTime, setStillTime] = useState(0)
-  const [message, setMessage] = useState('顔がカメラに映る位置に座ってください。')
-  const [subMessage, setSubMessage] = useState('顔の中心を中央線に合わせます。')
+  const [message, setMessage] = useState('顔がカメラに映る位置へ')
+  const [subMessage, setSubMessage] = useState('近づいたり離れたり調整してください')
   const [isModelLoading, setIsModelLoading] = useState(true) // モデル読み込み中
   const [loadingDots, setLoadingDots] = useState(0) // ローディングアニメーション
 
@@ -62,16 +62,16 @@ function CalibrationScreen({ onComplete }) {
     if (faceWidth > MAX_FACE_WIDTH) {
       stillStartRef.current = null
       setStillTime(0)
-      setMessage('少し離れてください。')
-      setSubMessage('顔が枠に収まるように調整します。')
+      setMessage('少し離れてください')
+      setSubMessage('顔が大きすぎます')
       return
     }
 
     if (faceWidth < MIN_FACE_WIDTH) {
       stillStartRef.current = null
       setStillTime(0)
-      setMessage('もう少し近づいてください。')
-      setSubMessage('顔が小さすぎます。')
+      setMessage('もう少し近づいてください')
+      setSubMessage('顔が小さすぎます')
       return
     }
 
@@ -88,16 +88,16 @@ function CalibrationScreen({ onComplete }) {
     if (!isPositionCentered) {
       stillStartRef.current = null
       setStillTime(0)
-      setMessage('顔を画面の中央に移動してください。')
-      setSubMessage('顔の楕円枠の中心に合わせます。')
+      setMessage('顔を枠の中央へ')
+      setSubMessage('近づいたり離れたり調整してください')
       return
     }
 
     if (!isAngleCentered) {
       stillStartRef.current = null
       setStillTime(0)
-      setMessage('正面を向いてください。')
-      setSubMessage('')
+      setMessage('カメラを正面から見てください')
+      setSubMessage('良い位置になったら静止します')
       return
     }
 
@@ -140,7 +140,7 @@ function CalibrationScreen({ onComplete }) {
         stillStartRef.current = null
         calibrationDataRef.current = []
         setStillTime(0)
-        setMessage('準備できたら、2秒静止。')
+        setMessage('良い位置です！2秒静止')
         setSubMessage('')
       }
     }
