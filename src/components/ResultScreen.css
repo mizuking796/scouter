@@ -181,7 +181,7 @@
 
 /* セクションタイトル */
 .section-title {
-  font-size: 14px;
+  font-size: 18px;
   margin-bottom: 8px;
 }
 
@@ -217,30 +217,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--scouter-green-dim);
   background: rgba(0, 255, 65, 0.05);
 }
 
 .score-label {
   flex: 1;
-  font-size: 11px;
+  font-size: 15px;
   color: var(--scouter-green-dim);
 }
 
 .score-value {
-  width: 36px;
+  width: 40px;
   text-align: right;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   color: var(--scouter-green);
   font-family: 'Courier New', monospace;
 }
 
 .score-rank {
-  width: 32px;
+  width: 36px;
   text-align: center;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   margin-left: 8px;
 }
@@ -291,10 +291,10 @@
 }
 
 .lr-label {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold;
   color: var(--scouter-green);
-  width: 18px;
+  width: 22px;
   text-align: center;
 }
 
@@ -354,14 +354,14 @@
 }
 
 .lr-value {
-  font-size: 13px;
+  font-size: 18px;
   font-weight: bold;
   color: var(--scouter-green);
   font-family: 'Courier New', monospace;
 }
 
 .lr-diff {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--scouter-green-dim);
 }
 
@@ -377,12 +377,12 @@
 }
 
 .angle-direction {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--scouter-green-dim);
 }
 
 .angle-value {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: bold;
   color: var(--scouter-green);
   font-family: 'Courier New', monospace;
@@ -396,7 +396,7 @@
 }
 
 .final-disclaimer p {
-  font-size: 10px;
+  font-size: 14px;
   color: var(--scouter-green-dim);
   line-height: 1.5;
   margin: 0;
@@ -411,7 +411,7 @@
 .details-link-section a {
   color: var(--scouter-green);
   text-decoration: underline;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .details-link-section a:hover {
