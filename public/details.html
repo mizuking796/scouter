@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技術詳細 - 戦闘力(仮)スカウター</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #0a0a0a;
+      color: #00ff41;
+      min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.8;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    }
+    .subtitle {
+      text-align: center;
+      color: #00aa2a;
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+    h2 {
+      font-size: 20px;
+      margin-top: 48px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #00ff41;
+      padding-bottom: 8px;
+    }
+    h3 {
+      font-size: 16px;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #00ff41;
+    }
+    h4 {
+      font-size: 14px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: #00cc33;
+    }
+    p {
+      margin-bottom: 16px;
+      color: #00aa2a;
+    }
+    ul, ol {
+      margin-bottom: 16px;
+      padding-left: 24px;
+      color: #00aa2a;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    code {
+      background: rgba(0, 255, 65, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      color: #00ff41;
+    }
+    pre {
+      background: rgba(0, 255, 65, 0.05);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      padding: 16px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #00cc33;
+    }
+    .formula {
+      background: rgba(0, 255, 65, 0.08);
+      border-left: 3px solid #00ff41;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    th, td {
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: rgba(0, 255, 65, 0.1);
+      color: #00ff41;
+    }
+    td {
+      color: #00aa2a;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 40px;
+      color: #00ff41;
+      text-decoration: underline;
+    }
+    .toc {
+      background: rgba(0, 255, 65, 0.05);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      padding: 20px;
+      margin-bottom: 32px;
+      border-radius: 4px;
+    }
+    .toc h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .toc ul {
+      margin-bottom: 0;
+    }
+    .toc a {
+      color: #00ff41;
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    .warning {
+      background: rgba(255, 165, 0, 0.1);
+      border: 1px solid rgba(255, 165, 0, 0.5);
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+      color: #ffa500;
+    }
+    .updated {
+      text-align: right;
+      font-size: 12px;
+      color: #666;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>技術詳細ドキュメント</h1>
+    <p class="subtitle">戦闘力(仮)スカウター v1.0 - アルゴリズム仕様書</p>
+
+    <div class="warning">
+      本システムは医学的・科学的根拠に基づくものではありません。
+      エンターテインメント目的の参考指標です。
+    </div>
+
+    <div class="toc">
+      <h3>目次</h3>
+      <ul>
+        <li><a href="#overview">1. システム概要</a></li>
+        <li><a href="#face-detection">2. 顔検出・ランドマーク抽出</a></li>
+        <li><a href="#smoothness">3. スムーズネス計算</a></li>
+        <li><a href="#neck-index">4. ネック指数</a></li>
+        <li><a href="#trapezius">5. 首肩ボリューム特徴</a></li>
+        <li><a href="#face-combat">6. 闘争的フェイス特徴</a></li>
+        <li><a href="#jujutsu">7. 柔術フェイス特徴（耳解析）</a></li>
+        <li><a href="#hexagon">8. 6競技適性（ファジィ推論）</a></li>
+        <li><a href="#combat-power">9. 戦闘力計算</a></li>
+        <li><a href="#gamma">10. ガンマ補正</a></li>
+      </ul>
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="overview">1. システム概要</h2>
+    <!-- ============================================== -->
+
+    <h3>1.1 アーキテクチャ</h3>
+    <p>本システムは以下の技術スタックで構成されています：</p>
+    <ul>
+      <li><strong>フロントエンド:</strong> React 19 + Vite</li>
+      <li><strong>顔検出:</strong> MediaPipe Face Mesh（468ランドマーク）</li>
+      <li><strong>チャート描画:</strong> Chart.js（Radar）</li>
+      <li><strong>音声:</strong> Web Audio API</li>
+    </ul>
+
+    <h3>1.2 処理フロー</h3>
+    <ol>
+      <li><strong>キャリブレーション:</strong> 正面顔の基準データを取得（2秒静止）</li>
+      <li><strong>回旋測定:</strong> 右→左→上の3方向の首回旋を測定</li>
+      <li><strong>特徴抽出:</strong> 各フレームから顔・首・肩の特徴を抽出</li>
+      <li><strong>スコア算出:</strong> 複数の指標を統合して戦闘力を算出</li>
+      <li><strong>適性推論:</strong> ファジィ論理で6競技への適性を推論</li>
+    </ol>
+
+    <!-- ============================================== -->
+    <h2 id="face-detection">2. 顔検出・ランドマーク抽出</h2>
+    <!-- ============================================== -->
+
+    <h3>2.1 MediaPipe Face Mesh</h3>
+    <p>Google MediaPipe の Face Mesh モデルを使用し、顔から468個の3Dランドマークを検出します。</p>
+
+    <h4>主要ランドマークインデックス</h4>
+    <table>
+      <tr><th>部位</th><th>インデックス</th><th>用途</th></tr>
+      <tr><td>鼻先</td><td>1</td><td>顔の中心位置</td></tr>
+      <tr><td>左目外側</td><td>33</td><td>目の位置・角度計算</td></tr>
+      <tr><td>右目外側</td><td>263</td><td>目の位置・角度計算</td></tr>
+      <tr><td>左耳</td><td>234</td><td>耳解析・肩幅推定</td></tr>
+      <tr><td>右耳</td><td>454</td><td>耳解析・肩幅推定</td></tr>
+      <tr><td>顎中央</td><td>152</td><td>首の位置</td></tr>
+      <tr><td>額中央</td><td>10</td><td>顔の傾き</td></tr>
+      <tr><td>左頬骨</td><td>234</td><td>fWHR計算</td></tr>
+      <tr><td>右頬骨</td><td>454</td><td>fWHR計算</td></tr>
+    </table>
+
+    <h3>2.2 角度計算</h3>
+    <p>顔の回旋角度（yaw, pitch）は、目の位置と鼻の位置から計算します。</p>
+    <div class="formula">
+      <strong>Yaw（左右回旋）:</strong><br>
+      yaw = atan2(rightEye.z - leftEye.z, rightEye.x - leftEye.x) × (180/π)
+    </div>
+    <div class="formula">
+      <strong>Pitch（上下回旋）:</strong><br>
+      pitch = atan2(nose.y - eyeCenter.y, nose.z - eyeCenter.z) × (180/π) - 90
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="smoothness">3. スムーズネス計算</h2>
+    <!-- ============================================== -->
+
+    <h3>3.1 概要</h3>
+    <p>首回旋の滑らかさを数値化します。ガクつきや微停止が少ないほど高スコアになります。</p>
+
+    <h3>3.2 評価区間</h3>
+    <p>最大回旋角度の10%〜90%の区間のみを評価対象とします。開始・終了付近のノイズを除外するためです。</p>
+
+    <h3>3.3 ガクつき検出（Jerk Detection）</h3>
+    <p>連続する3フレームから角速度を計算し、以下の条件でガクつきを検出します：</p>
+    <ul>
+      <li><strong>符号反転:</strong> 角速度の符号が反転し、かつ両方の絶対値が5°/s以上</li>
+      <li><strong>加速度急変:</strong> 角加速度の絶対値が100°/s²以上</li>
+    </ul>
+    <div class="formula">
+      角速度 v = (angle[i] - angle[i-1]) / dt<br>
+      角加速度 a = (v2 - v1) / ((dt1 + dt2) / 2)
+    </div>
+
+    <h3>3.4 微停止検出（Micro-Stop Detection）</h3>
+    <p>一時的に速度が落ちて再び上がるパターンを検出します：</p>
+    <ul>
+      <li>条件: v1 &lt; 0.01 かつ v2 &gt; 0.05</li>
+    </ul>
+
+    <h3>3.5 スコア計算</h3>
+    <div class="formula">
+      jerkPenalty = min(jerks × 5, 40)<br>
+      stopPenalty = min(microStops × 3, 20)<br>
+      <strong>score = max(0, 100 - jerkPenalty - stopPenalty)</strong>
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="neck-index">4. ネック指数</h2>
+    <!-- ============================================== -->
+
+    <h3>4.1 静的ネック指数</h3>
+    <p>正面顔の顎幅と顔幅の比率から首の太さを推定します。</p>
+    <div class="formula">
+      ratio = jawWidth / faceWidth
+    </div>
+
+    <h4>スコアリング（区分線形）</h4>
+    <table>
+      <tr><th>比率</th><th>スコア範囲</th><th>評価</th></tr>
+      <tr><td>≤ 0.80</td><td>0-15</td><td>細い</td></tr>
+      <tr><td>0.80-0.90</td><td>15-35</td><td>やや細い</td></tr>
+      <tr><td>0.90-1.00</td><td>35-55</td><td>普通</td></tr>
+      <tr><td>1.00-1.10</td><td>55-75</td><td>やや太い</td></tr>
+      <tr><td>1.10-1.20</td><td>75-90</td><td>太い</td></tr>
+      <tr><td>&gt; 1.20</td><td>90-100</td><td>S級候補</td></tr>
+    </table>
+
+    <h3>4.2 動的ネック指数</h3>
+    <p>上向き回旋時の顎幅変化から、首の筋肉の浮き出しやすさを推定します。</p>
+    <div class="formula">
+      changeRatio = |endJawWidth - startJawWidth| / faceWidth
+    </div>
+
+    <h4>スコアリング</h4>
+    <table>
+      <tr><th>変化率</th><th>スコア範囲</th></tr>
+      <tr><td>≤ 0.01</td><td>30-40</td></tr>
+      <tr><td>0.01-0.05</td><td>40-60</td></tr>
+      <tr><td>0.05-0.10</td><td>60-80</td></tr>
+      <tr><td>0.10-0.20</td><td>80-100</td></tr>
+      <tr><td>&gt; 0.20</td><td>100</td></tr>
+    </table>
+
+    <!-- ============================================== -->
+    <h2 id="trapezius">5. 首肩ボリューム特徴</h2>
+    <!-- ============================================== -->
+
+    <h3>5.1 概要</h3>
+    <p>首から肩にかけてのボリューム感を3つの指標で評価します。</p>
+
+    <h3>5.2 肩幅（Shoulder Width）</h3>
+    <p>耳の位置と顎の位置から肩幅を推定します。</p>
+    <div class="formula">
+      estimatedShoulderWidth = earWidth × 1.3 + jawWidth × 0.2<br>
+      widthRatio = estimatedShoulderWidth / faceWidth
+    </div>
+    <p>スコアリング: 比率 1.2〜1.6 を 0〜100 に正規化</p>
+
+    <h3>5.3 肩傾斜（Shoulder Slope）</h3>
+    <p>首から肩へのラインの傾斜角度を測定します。傾斜が緩やかなほど高スコア。</p>
+
+    <h3>5.4 肩面積（Shoulder Area）</h3>
+    <p>首から肩にかけての面積比を推定します。</p>
+
+    <h3>5.5 総合スコア</h3>
+    <div class="formula">
+      score = (widthScore + slopeScore + areaScore) / 3
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="face-combat">6. 闘争的フェイス特徴</h2>
+    <!-- ============================================== -->
+
+    <h3>6.1 概要</h3>
+    <p>顔の形態的特徴から5つの指標を計算します。30フレームの履歴で平均化し、安定した計測を実現します。</p>
+
+    <h3>6.2 fWHR（顔幅比）</h3>
+    <p>Facial Width-to-Height Ratio。頬骨幅 / 顔の高さ（眉下〜上唇）の比率。</p>
+    <div class="formula">
+      fWHR = cheekboneWidth / faceHeight<br>
+      通常値: 1.4〜2.4<br>
+      スコア: (fWHR - 1.4) / (2.4 - 1.4) × 100
+    </div>
+
+    <h3>6.3 表情抑制（Expression Suppression）</h3>
+    <p>口の開き、眉の動きなどの表情変化が少ないほど高スコア。</p>
+
+    <h3>6.4 視線安定（Gaze Stability）</h3>
+    <p>視線のブレが少ないほど高スコア。虹彩位置の標準偏差から計算。</p>
+
+    <h3>6.5 顎ライン（Jaw Line）</h3>
+    <p>顎のラインの角度とシャープさを評価。</p>
+
+    <h3>6.6 頬骨（Cheekbone）</h3>
+    <p>頬骨の突出度と位置を評価。</p>
+
+    <h3>6.7 総合スコア</h3>
+    <div class="formula">
+      totalScore = (expression + gaze + fwhr + jaw + cheekbone) / 5
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="jujutsu">7. 柔術フェイス特徴（耳解析）</h2>
+    <!-- ============================================== -->
+
+    <h3>7.1 概要</h3>
+    <p>耳まわりの形状から組み技系格闘技の雰囲気を可視化します。4つの指標で評価。</p>
+
+    <h3>7.2 耳輪郭の不規則さ（Ear Contour）</h3>
+    <p>耳の輪郭線の凹凸を検出。不規則なほど高スコア。</p>
+
+    <h3>7.3 左右非対称（Ear Asymmetry）</h3>
+    <p>左右の耳の形状差を評価。非対称なほど高スコア。</p>
+
+    <h3>7.4 局所的膨らみ（Ear Thickness Proxy）</h3>
+    <p>耳の特定部位の膨らみを検出。</p>
+
+    <h3>7.5 輪郭連続性の破れ（Ear Continuity）</h3>
+    <p>輪郭線の不連続点を検出。</p>
+
+    <h3>7.6 総合スコアと戦闘力への影響</h3>
+    <div class="formula">
+      jujutsuScore = (contour + asymmetry + thickness + continuity) / 4<br>
+      <br>
+      // 条件付きボーナス（柔術スコア70以上 かつ 首指標平均60以上）<br>
+      bonusRate = 0.02 + (jujutsuScore - 70) / 30 × 0.01<br>
+      bonus = min(bonusRate, 0.03)  // 最大3%
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="hexagon">8. 6競技適性（ファジィ推論）</h2>
+    <!-- ============================================== -->
+
+    <h3>8.1 概要</h3>
+    <p>6つの格闘技（ボクシング、キック/ムエタイ、MMA、レスリング、柔道、柔術）への適性を、線形スコアリングとファジィ補正の組み合わせで算出します。</p>
+
+    <div class="warning">
+      クラスタリングや機械学習は使用していません。固定の重み付け線形結合＋ファジィ補正のみです。
+    </div>
+
+    <h3>8.2 入力特徴量（正規化 0-1）</h3>
+    <table>
+      <tr><th>変数</th><th>内容</th><th>ソース</th></tr>
+      <tr><td>NS_raw</td><td>静的ネック指数</td><td>calibration</td></tr>
+      <tr><td>NV_raw</td><td>首肩ボリューム</td><td>trapezius.score</td></tr>
+      <tr><td>TT_raw</td><td>体幹厚み</td><td>trapezius.area</td></tr>
+      <tr><td>SH_raw</td><td>肩幅/頭幅比</td><td>trapezius.width</td></tr>
+      <tr><td>EJ_raw</td><td>柔術スコア</td><td>jujutsu.score</td></tr>
+      <tr><td>FA_crop</td><td>顔の非対称性</td><td>jujutsu.asymmetry</td></tr>
+      <tr><td>NJ_crop</td><td>首顎角度</td><td>jawWidth/faceHeight</td></tr>
+    </table>
+
+    <h3>8.3 線形スコアリング（凍結版）</h3>
+    <p>各競技への適性スコアは、特徴量の重み付き線形結合で計算します。</p>
+    <pre>
+// 柔道（rawのみ）
+score_judo = 0.45×NV_raw + 0.35×NS_raw + 0.20×SH_raw
+
+// レスリング（rawのみ）
+score_wrestling = 0.35×NV_raw + 0.30×NS_raw + 0.20×TT_raw + 0.15×EJ_raw
+
+// 柔術（croppedのみ）
+score_bjj = 0.40×EJ_crop + 0.25×NS_crop + 0.20×SH_crop + 0.15×NV_crop
+
+// MMA（混合）
+score_mma = 0.25×NV_raw + 0.20×NS_raw + 0.15×TT_raw + 0.20×FA_crop + 0.20×EJ_crop
+
+// ボクシング（croppedのみ、マイナス項あり）
+score_boxing = 0.35×FA_crop + 0.25×NJ_crop - 0.25×NV_crop - 0.15×TT_crop
+
+// キック/ムエタイ（混合）
+score_kick_muay = 0.30×NJ_crop + 0.30×NS_raw + 0.20×TT_raw + 0.20×FA_crop
+    </pre>
+
+    <h3>8.4 ファジィメンバーシップ関数</h3>
+
+    <h4>High メンバーシップ（固定閾値版）</h4>
+    <div class="formula">
+      μ_high(x, threshold=0.6) = <br>
+      &nbsp;&nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(x ≤ threshold)<br>
+      &nbsp;&nbsp;(x - threshold) / (1 - threshold) &nbsp;&nbsp;(threshold &lt; x &lt; 1)<br>
+      &nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(x ≥ 1)
+    </div>
+
+    <h4>High メンバーシップ（パーセンタイル版・柔道専用）</h4>
+    <div class="formula">
+      μ_high_pct(x, p90, xMax) = <br>
+      &nbsp;&nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(x ≤ p90)<br>
+      &nbsp;&nbsp;(x - p90) / (xMax - p90) &nbsp;&nbsp;(p90 &lt; x &lt; xMax)<br>
+      &nbsp;&nbsp;1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(x ≥ xMax)
+    </div>
+
+    <h4>Medium メンバーシップ</h4>
+    <div class="formula">
+      μ_medium(x) = <br>
+      &nbsp;&nbsp;0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(x ≤ 0.3 or x ≥ 0.7)<br>
+      &nbsp;&nbsp;(x - 0.3) / 0.2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.3 &lt; x &lt; 0.5)<br>
+      &nbsp;&nbsp;(0.7 - x) / 0.2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.5 ≤ x &lt; 0.7)
+    </div>
+
+    <h3>8.5 ファジィ補正ルール</h3>
+    <pre>
+MAX_FUZZY_BONUS = 10  // 最大ボーナス点
+
+// ① 柔道
+IF NV_raw is High(pct) AND NS_raw is High(pct)
+THEN bonus_judo = 10 × min(μ_nv, μ_ns)
+
+// ② レスリング
+IF NV is High AND NS is High: base = 6 × min(μ_nv, μ_ns)
+IF EJ is Medium or High: ear_bonus = 4 × max(μ_medium, μ_high)
+bonus_wrestling = min(10, base + ear_bonus)
+
+// ③ 柔術
+IF EJ_crop is High
+THEN bonus_bjj = 10 × μ_high(EJ_crop)
+
+// ボクシング、MMA、キック/ムエタイはファジィ補正なし
+    </pre>
+
+    <h3>8.6 最終スコア</h3>
+    <div class="formula">
+      finalScore[sport] = linearScore[sport] + fuzzyBonus[sport]<br>
+      (0〜100にクリップ)
+    </div>
+
+    <h3>8.7 ボクシングの正規化</h3>
+    <p>ボクシングは負の項を含むため、特別な正規化を適用：</p>
+    <div class="formula">
+      normalized = (rawScore + 0.30) / 0.90
+    </div>
+
+    <!-- ============================================== -->
+    <h2 id="combat-power">9. 戦闘力計算</h2>
+    <!-- ============================================== -->
+
+    <h3>9.1 ベーススコア</h3>
+    <p>6つの内部スコアの平均値をベーススコアとします。</p>
+    <div class="formula">
+      baseScore = (rightSmoothness + leftSmoothness + upSmoothness<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ staticNeckIndex + dynamicNeckIndex + shoulderVolume) / 6
+    </div>
+
+    <h3>9.2 指数関数スケーリング</h3>
+    <p>ベーススコアを指数関数でスケーリングし、ドラゴンボール風の戦闘力を算出します。</p>
+    <div class="formula">
+      combatPower = A × exp(B × baseScore)<br>
+      <br>
+      A = 1<br>
+      B = 0.13
+    </div>
+
+    <h4>スケーリング例</h4>
+    <table>
+      <tr><th>ベーススコア</th><th>戦闘力</th></tr>
+      <tr><td>10</td><td>約 4</td></tr>
+      <tr><td>30</td><td>約 50</td></tr>
+      <tr><td>50</td><td>約 665</td></tr>
+      <tr><td>70</td><td>約 8,800</td></tr>
+      <tr><td>90</td><td>約 116,000</td></tr>
+      <tr><td>100</td><td>約 4億</td></tr>
+    </table>
+
+    <!-- ============================================== -->
+    <h2 id="gamma">10. ガンマ補正</h2>
+    <!-- ============================================== -->
+
+    <h3>10.1 目的</h3>
+    <p>表示用スコアの分布を調整するため、ガンマ補正を適用します。内部スコアには影響しません。</p>
+
+    <h3>10.2 静的ネック指数のガンマ補正</h3>
+    <div class="formula">
+      γ = 1.2<br>
+      displayScore = (rawScore / 100)^γ × 100
+    </div>
+    <p>γ &gt; 1 によりスコアを抑制し、高スコアを出にくくします。</p>
+
+    <h3>10.3 左右バランスのガンマ補正</h3>
+    <div class="formula">
+      γ = 1.3<br>
+      displayScore = (rawScore / 100)^γ × 100
+    </div>
+
+    <h3>10.4 ランク判定閾値</h3>
+    <table>
+      <tr><th>ランク</th><th>通常</th><th>静的ネック</th><th>バランス</th></tr>
+      <tr><td>S</td><td>90+</td><td>98+</td><td>99+</td></tr>
+      <tr><td>A</td><td>75+</td><td>90+</td><td>90+</td></tr>
+      <tr><td>B</td><td>55+</td><td>55+</td><td>55+</td></tr>
+      <tr><td>C</td><td>35+</td><td>35+</td><td>35+</td></tr>
+      <tr><td>D</td><td>&lt;35</td><td>&lt;35</td><td>&lt;35</td></tr>
+    </table>
+
+    <!-- ============================================== -->
+
+    <a href="./" class="back-link">← トップに戻る</a>
+
+    <p class="updated">最終更新: 2025年2月</p>
+  </div>
+</body>
+</html>

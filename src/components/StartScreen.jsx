@@ -33,6 +33,7 @@ function StartScreen({ onStart }) {
 
         <div className="terms-notice">
           <p>STARTを押すと<a href="./terms.html" target="_blank">利用規約</a>に同意したものとみなします</p>
+          <p className="details-link"><a href="./details.html" target="_blank">技術詳細</a></p>
         </div>
 
         <button className="scouter-button" onClick={handleStart}>
