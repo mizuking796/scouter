@@ -85,6 +85,13 @@
   padding: 18px 56px;
 }
 
+.developer-credit {
+  font-size: 14px;
+  color: var(--scouter-green-dim);
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
 /* モバイル対応 */
 @media (max-width: 600px) {
   .description {

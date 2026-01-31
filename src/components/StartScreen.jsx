@@ -39,6 +39,10 @@ function StartScreen({ onStart }) {
         <button className="scouter-button" onClick={handleStart}>
           START
         </button>
+
+        <p className="developer-credit">
+          開発: 特定非営利活動法人リハビリコラボレーション
+        </p>
       </div>
     </div>
   )
