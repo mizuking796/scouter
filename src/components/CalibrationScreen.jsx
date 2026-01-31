@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import { useFaceTracking } from '../hooks/useFaceTracking'
 import { playOkSound, warmupAudio } from '../utils/sound'
 import { extractTrapeziusBaseData } from '../features/trapezius'
@@ -20,12 +20,30 @@ function CalibrationScreen({ onComplete }) {
   const [stillTime, setStillTime] = useState(0)
   const [message, setMessage] = useState('顔がカメラに映る位置に座ってください。')
   const [subMessage, setSubMessage] = useState('顔の中心を中央線に合わせます。')
+  const [isModelLoading, setIsModelLoading] = useState(true) // モデル読み込み中
+  const [loadingDots, setLoadingDots] = useState(0) // ローディングアニメーション
 
   const lastAnglesRef = useRef(null)
   const stillStartRef = useRef(null)
   const calibrationDataRef = useRef([])
+  const isFirstResultRef = useRef(true) // 最初の結果かどうか
+
+  // ローディングアニメーション
+  useEffect(() => {
+    if (!isModelLoading) return
+    const interval = setInterval(() => {
+      setLoadingDots(d => (d + 1) % 4)
+    }, 400)
+    return () => clearInterval(interval)
+  }, [isModelLoading])
 
   const handleResults = useCallback((results) => {
+    // 最初の結果を受け取ったらモデル読み込み完了
+    if (isFirstResultRef.current) {
+      isFirstResultRef.current = false
+      setIsModelLoading(false)
+    }
+
     if (!results) {
       setFaceData(null)
       stillStartRef.current = null
@@ -205,6 +223,19 @@ function CalibrationScreen({ onComplete }) {
 
         {/* 中央線 */}
         <div className="center-line" />
+
+        {/* モデル読み込み中オーバーレイ */}
+        {isModelLoading && (
+          <div className="loading-overlay">
+            <div className="loading-content">
+              <div className="loading-spinner" />
+              <p className="loading-text">
+                顔認識を準備中{'.'.repeat(loadingDots)}
+              </p>
+              <p className="loading-sub">初回は少しお待ちください</p>
+            </div>
+          </div>
+        )}
 
         {/* 進捗バー */}
         {stillTime > 0 && (
