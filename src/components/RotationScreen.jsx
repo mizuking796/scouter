@@ -417,13 +417,32 @@ function RotationScreen({ direction, calibrationData, onComplete }) {
       const minAngle = direction === 'up' ? MIN_ANGLE_UP : MIN_ANGLE_LR
       const resetThreshold = minAngle * 0.7 // リセット閾値は最小角度の70%（余裕を持たせる）
 
-      // 角度が大きく下がった場合のみリセット（一瞬の検出ブレを許容）
+      // 角度が大きく下がった場合のリセット処理
+      // ただし、ホールド中は一瞬の検出ブレを許容（連続でなければリセットしない）
       if (absAngle < resetThreshold) {
-        measurementRef.current.holdStartTime = null
-        setHoldProgress(0)
-        phaseRef.current = PHASE.ROTATING
-        setDisplayPhase(PHASE.ROTATING)
-        return
+        // ホールド中でない場合は即リセット
+        if (!measurementRef.current.holdStartTime) {
+          setHoldProgress(0)
+          phaseRef.current = PHASE.ROTATING
+          setDisplayPhase(PHASE.ROTATING)
+          return
+        }
+        // ホールド中の場合は、角度が低い状態が続いた時のみリセット
+        if (!measurementRef.current.lowAngleStartTime) {
+          measurementRef.current.lowAngleStartTime = Date.now()
+        } else if (Date.now() - measurementRef.current.lowAngleStartTime > 200) {
+          // 200ms以上角度が低い状態が続いたらリセット
+          measurementRef.current.holdStartTime = null
+          measurementRef.current.lowAngleStartTime = null
+          setHoldProgress(0)
+          phaseRef.current = PHASE.ROTATING
+          setDisplayPhase(PHASE.ROTATING)
+          return
+        }
+        // 一瞬の検出ブレの場合はホールドを継続
+      } else {
+        // 角度が戻ったらlowAngleStartTimeをリセット
+        measurementRef.current.lowAngleStartTime = null
       }
 
       // 最小角度以上ならホールド開始
