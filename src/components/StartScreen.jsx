@@ -29,10 +29,11 @@ function StartScreen({ onStart }) {
         <div className="notice">
           <p>※ 首が見える服装で行ってください</p>
           <p>※ カメラへのアクセスを許可してください</p>
+          <p>※ スマホ・タブレットは縦向きでご利用ください</p>
         </div>
 
         <div className="terms-notice">
-          <p>STARTを押すと<a href="./terms.html">利用規約</a>に同意したものとみなします</p>
+          <p>STARTを押すと<a href="./terms.html">利用規約</a>に<br />同意したものとみなします</p>
           <p className="details-link"><a href="./details.html">技術詳細</a></p>
         </div>
 
@@ -41,7 +42,7 @@ function StartScreen({ onStart }) {
         </button>
 
         <p className="developer-credit">
-          開発: 特定非営利活動法人リハビリコラボレーション
+          開発: 特定非営利活動法人<br />リハビリコラボレーション
         </p>
       </div>
     </div>

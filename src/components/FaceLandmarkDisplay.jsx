@@ -26,7 +26,7 @@ const HIGHLIGHT_LANDMARKS = {
 // 全ランドマークのフラットリスト
 const ALL_HIGHLIGHT_INDICES = Object.values(HIGHLIGHT_LANDMARKS).flat()
 
-function FaceLandmarkDisplay({ landmarks, width = 200, height = 250 }) {
+function FaceLandmarkDisplay({ landmarks, width = 200, height = 250, aspectRatio = 4/3 }) {
   const canvasRef = useRef(null)
 
   useEffect(() => {
@@ -53,16 +53,22 @@ function FaceLandmarkDisplay({ landmarks, width = 200, height = 250 }) {
     const padding = 20
     const faceWidth = maxX - minX
     const faceHeight = maxY - minY
-    const scale = Math.min(
-      (w - padding * 2) / faceWidth,
-      (h - padding * 2) / faceHeight
-    )
-    const offsetX = (w - faceWidth * scale) / 2 - minX * scale
-    const offsetY = (h - faceHeight * scale) / 2 - minY * scale
 
-    // 座標変換関数（鏡像表示）
+    // アスペクト比を考慮した物理的な幅を計算
+    // 正規化座標のx範囲 * アスペクト比 = 実際の物理的比率
+    const physicalFaceWidth = faceWidth * aspectRatio
+    const physicalFaceHeight = faceHeight
+
+    const scale = Math.min(
+      (w - padding * 2) / physicalFaceWidth,
+      (h - padding * 2) / physicalFaceHeight
+    )
+    const offsetX = (w - physicalFaceWidth * scale) / 2 - minX * aspectRatio * scale
+    const offsetY = (h - physicalFaceHeight * scale) / 2 - minY * scale
+
+    // 座標変換関数（鏡像表示、アスペクト比補正付き）
     const transform = (lm) => ({
-      x: w - (lm.x * scale + offsetX), // X軸反転で鏡像
+      x: w - (lm.x * aspectRatio * scale + offsetX), // X軸反転で鏡像、アスペクト比補正
       y: lm.y * scale + offsetY
     })
 
@@ -163,7 +169,7 @@ function FaceLandmarkDisplay({ landmarks, width = 200, height = 250 }) {
       ctx.fillRect(0, y, w, 1)
     }
 
-  }, [landmarks, width, height])
+  }, [landmarks, width, height, aspectRatio])
 
   return (
     <canvas

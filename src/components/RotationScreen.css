@@ -270,6 +270,7 @@
 .instruction-panel {
   position: relative;
   padding: 20px 30px;
+  padding-bottom: 40px; /* 最初からボタン用のスペース */
   text-align: center;
   max-width: 500px;
 }
@@ -508,6 +509,7 @@
 
   .instruction-panel {
     padding: 16px 20px;
+    padding-bottom: 36px; /* 最初からボタン用のスペース */
   }
 
   .direction-label {

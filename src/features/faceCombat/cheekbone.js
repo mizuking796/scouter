@@ -33,8 +33,8 @@ export function calculateCheekbone(landmarks, aspectRatio = 4/3) {
   const avgPosition = cheekboneHistory.reduce((sum, c) => sum + c.position, 0) / cheekboneHistory.length
 
   // スコア計算
-  // 突出度: 高いほど良い（0.02〜0.08 → 0〜100）
-  const prominenceScore = normalizeScore(avgProminence, 0.02, 0.08)
+  // 突出度: 高いほど良い（0.01〜0.10 → 0〜100）- 比率なのでスケール不変
+  const prominenceScore = normalizeScore(avgProminence, 0.01, 0.10)
 
   // 位置: 高い位置ほど良い（0.3〜0.5 → 0〜100）
   const positionScore = normalizeScore(1 - avgPosition, 0.5, 0.7) // Y座標なので反転
@@ -56,7 +56,7 @@ export function calculateCheekbone(landmarks, aspectRatio = 4/3) {
 /**
  * 頬骨特徴を抽出
  * @param {Array} landmarks - ランドマーク
- * @param {number} aspectRatio - 未使用（幅同士の比較なので補正不要）
+ * @param {number} aspectRatio - 未使用（比率で計算するので補正不要）
  */
 function extractCheekboneFeatures(landmarks, aspectRatio) {
   // 頬骨の位置
@@ -76,9 +76,10 @@ function extractCheekboneFeatures(landmarks, aspectRatio) {
   const rightCheek = landmarks[LANDMARKS.RIGHT_CHEEK]
   const cheekWidth = Math.abs(rightCheek.x - leftCheek.x)
 
-  // 突出度 = 頬骨幅が顎幅と頬幅の平均よりどれだけ大きいか
+  // 突出度 = 頬骨幅が顎幅と頬幅の平均よりどれだけ大きいか（比率で計算）
   const avgLowerFaceWidth = (jawWidth + cheekWidth) / 2
-  const prominence = (zygoWidth - avgLowerFaceWidth)
+  // 顔の大きさに依存しないよう、頬骨幅で正規化
+  const prominence = zygoWidth > 0 ? (zygoWidth - avgLowerFaceWidth) / zygoWidth : 0
 
   // 頬骨の高さ位置（顔全体における相対位置）- Y座標は補正不要
   const forehead = landmarks[LANDMARKS.FOREHEAD]
@@ -87,6 +88,16 @@ function extractCheekboneFeatures(landmarks, aspectRatio) {
 
   const zygoY = (leftZygo.y + rightZygo.y) / 2
   const position = faceHeight > 0 ? (zygoY - forehead.y) / faceHeight : 0.4
+
+  // デバッグ出力
+  if (cheekboneHistory.length % 10 === 0) {
+    console.log('Cheekbone:', {
+      zygoWidth: zygoWidth.toFixed(4),
+      avgLowerFaceWidth: avgLowerFaceWidth.toFixed(4),
+      prominence: prominence.toFixed(4),
+      position: position.toFixed(3)
+    })
+  }
 
   return {
     prominence,

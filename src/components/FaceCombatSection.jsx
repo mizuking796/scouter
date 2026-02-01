@@ -15,6 +15,10 @@ function FaceCombatSection({ faceCombatData, calibrationData }) {
 
   // キャリブレーション時のランドマーク（正面）を使用
   const landmarks = calibrationData?.baseLandmarks || faceCombatData.landmarks
+  // アスペクト比を取得（デバッグ情報から）
+  const aspectRatio = faceCombatData._debug?.aspectRatio
+    ? parseFloat(faceCombatData._debug.aspectRatio)
+    : 4/3
 
   return (
     <div className="face-combat-section">
@@ -29,6 +33,7 @@ function FaceCombatSection({ faceCombatData, calibrationData }) {
             landmarks={landmarks}
             width={180}
             height={220}
+            aspectRatio={aspectRatio}
           />
           <div className="face-combat-total-inline">
             <span className="face-combat-total-label">総合</span>
