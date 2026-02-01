@@ -214,8 +214,8 @@
       <tr><td>右耳</td><td>454</td><td>耳解析・肩幅推定</td></tr>
       <tr><td>顎中央</td><td>152</td><td>首の位置</td></tr>
       <tr><td>額中央</td><td>10</td><td>顔の傾き</td></tr>
-      <tr><td>左頬骨</td><td>234</td><td>fWHR計算</td></tr>
-      <tr><td>右頬骨</td><td>454</td><td>fWHR計算</td></tr>
+      <tr><td>左頬骨</td><td>123</td><td>fWHR計算</td></tr>
+      <tr><td>右頬骨</td><td>352</td><td>fWHR計算</td></tr>
     </table>
 
     <h3>2.2 角度計算</h3>
@@ -334,11 +334,11 @@
     <p>顔の形態的特徴から5つの指標を計算します。30フレームの履歴で平均化し、安定した計測を実現します。</p>
 
     <h3>6.2 fWHR（顔幅比）</h3>
-    <p>Facial Width-to-Height Ratio。頬骨幅 / 顔の高さ（眉下〜上唇）の比率。</p>
+    <p>Facial Width-to-Height Ratio。頬骨幅 / 顔の高さ（眉下〜上唇）の比率。アスペクト比補正付き。</p>
     <div class="formula">
-      fWHR = cheekboneWidth / faceHeight<br>
-      通常値: 1.4〜2.4<br>
-      スコア: (fWHR - 1.4) / (2.4 - 1.4) × 100
+      fWHR = (cheekboneWidth / faceHeight) × aspectRatio<br>
+      通常値: 1.2〜1.8<br>
+      スコア: (fWHR - 1.2) / (1.8 - 1.2) × 100
     </div>
 
     <h3>6.3 表情抑制（Expression Suppression）</h3>
@@ -351,7 +351,11 @@
     <p>顎のラインの角度とシャープさを評価。</p>
 
     <h3>6.6 頬骨（Cheekbone）</h3>
-    <p>頬骨の突出度と位置を評価。</p>
+    <p>頬骨の突出度（比率）と位置を評価。スケール不変のため、カメラからの距離に依存しません。</p>
+    <div class="formula">
+      prominence = (zygoWidth - avgLowerFaceWidth) / zygoWidth<br>
+      スコア: prominence 0.01〜0.10 を 0〜100 に正規化
+    </div>
 
     <h3>6.7 総合スコア</h3>
     <div class="formula">
@@ -554,7 +558,7 @@ THEN bonus_bjj = 10 × μ_high(EJ_crop)
 
     <a href="./" class="back-link">← トップに戻る</a>
 
-    <p class="updated">最終更新: 2025年2月</p>
+    <p class="updated">最終更新: 2026年2月</p>
   </div>
 </body>
 </html>
